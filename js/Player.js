@@ -2,6 +2,7 @@ function Player () {
   this.x = 0;
   this.y = 0;
   this.speed = 2;
+  var shit = "fuck";
 
   this.model = {
     width: 32,
