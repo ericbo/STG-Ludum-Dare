@@ -3,3 +3,8 @@ body {
   padding: 0px;
   background-color: #244965;
 }
+
+canvas {
+  margin: 0 auto;
+  display: block;
+}
