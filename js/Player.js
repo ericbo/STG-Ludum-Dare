@@ -38,7 +38,6 @@ function Player () {
         
     if (KEYS.SPACE in KeysDown)
       if (this.isOnGround) {
-        console.log("Jumping!");
         this.curVel = this.jumpVel;
         this.y -= 1;
         this.isOnGround = false;
