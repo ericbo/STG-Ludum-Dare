@@ -97,7 +97,7 @@ var KEYS = {
     EQUAL: 197
 };
 
-function ZGF_INIT (CanvasWidth, CanvasHeight) {
+function FramworkInit (CanvasWidth, CanvasHeight) {
     // This function will be called when the game object is created
     canvas = document.createElement("Canvas");
     document.body.appendChild(canvas);
@@ -114,28 +114,28 @@ function ZGF_INIT (CanvasWidth, CanvasHeight) {
     else
         canvasHeight = CanvasHeight;
 
-    setCanvasSize(canvasWidth, canvasHeight);
+    SetCanvasSize(canvasWidth, canvasHeight);
 
-    main();
+    Main();
 }
 
-function update () {
+function Update () {
     // This function will be called every frame
     // Add code beneath
 
 }
 
-function render () {
+function Render () {
     // This function will be called every frame
     // Refresh the screen
-    refreshCanvas(/* Color */);
+    RefreshCanvas(/* Color */);
 
     // Add code beneath
 
 }
 
 // Sets the width and height of the canvas
-function setCanvasSize (Width, Height) {
+function SetCanvasSize (Width, Height) {
     this.canvasWidth = Width;
     this.canvasHeight = Height;
     ctx.canvas.width = Width;
@@ -143,20 +143,20 @@ function setCanvasSize (Width, Height) {
 }
 
 // Add a single script to the page [needs a string]
-function importScript (ScriptPath) {
+function ImportScript (ScriptPath) {
     var imp = document.createElement("script");
     imp.src = ScriptPath;
     document.head.appendChild(imp);
 }
 
 // Add multiple scrits to the page [needs array of strings]
-function importScripts (ScriptPaths) {
+function ImportScripts (ScriptPaths) {
     for (var i = 0; i < ScriptPaths.length; i++)
         importScript(ScriptPaths[i]);
 }
 
 // Refreshes the canvas to a color [needs a color string]
-function refreshCanvas (color) {
+function RefreshCanvas (color) {
     if (color === undefined)
         ctx.fillStyle = "#000";
     else
@@ -165,8 +165,8 @@ function refreshCanvas (color) {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
-function main() {
-    update();
-    render();
-    RequestAnimationFrame(main);
+function Main() {
+    Update();
+    Render();
+    RequestAnimationFrame(Main);
 }
