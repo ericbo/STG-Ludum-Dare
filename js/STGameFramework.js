@@ -97,6 +97,9 @@ var KEYS = {
     EQUAL: 197
 };
 
+// Temporary crap
+var player = new Player();
+
 function FramworkInit (CanvasWidth, CanvasHeight) {
     // This function will be called when the game object is created
     canvas = document.createElement("Canvas");
@@ -123,6 +126,8 @@ function Update () {
     // This function will be called every frame
     // Add code beneath
 
+    player.Update();
+
 }
 
 function Render () {
@@ -131,7 +136,7 @@ function Render () {
     RefreshCanvas(/* Color */);
 
     // Add code beneath
-
+    player.Render();
 }
 
 // Sets the width and height of the canvas
