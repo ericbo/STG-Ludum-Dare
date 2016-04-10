@@ -142,19 +142,6 @@ function SetCanvasSize (Width, Height) {
     ctx.canvas.height = Height;
 }
 
-// Add a single script to the page [needs a string]
-function ImportScript (ScriptPath) {
-    var imp = document.createElement("script");
-    imp.src = ScriptPath;
-    document.head.appendChild(imp);
-}
-
-// Add multiple scrits to the page [needs array of strings]
-function ImportScripts (ScriptPaths) {
-    for (var i = 0; i < ScriptPaths.length; i++)
-        importScript(ScriptPaths[i]);
-}
-
 // Refreshes the canvas to a color [needs a color string]
 function RefreshCanvas (color) {
     if (color === undefined)
