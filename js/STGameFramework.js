@@ -27,79 +27,20 @@ addEventListener("keyup", function (e) {
     delete KeysDown[e.keyCode];
 }, false);
 
-// Keyboard keys
-var KEYS = {
-    BACKSPACE: 8,
-    TAB: 9,
-    RETURN: 13,
-    SHIFT: 16,
-    CONTROL: 17,
-    ALT: 18,
-    ESCAPE: 27,
-    SPACE: 32,
-    UP: 38,
-    LEFT: 37,
-    RIGHT: 39,
-    DOWN: 40,
-    K0: 48,
-    K1: 49,
-    K2: 50,
-    K3: 51,
-    K4: 52,
-    K5: 53,
-    K6: 54,
-    K7: 55,
-    K8: 56,
-    K9: 57,
-    A: 65,
-    B: 66,
-    C: 67,
-    D: 68,
-    E: 69,
-    F: 70,
-    G: 71,
-    H: 72,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    M: 77,
-    N: 78,
-    O: 79,
-    P: 80,
-    Q: 81,
-    R: 82,
-    S: 83,
-    T: 84,
-    U: 85,
-    V: 86,
-    W: 87,
-    X: 88,
-    Y: 89,
-    Z: 90,
-    F1: 112,
-    F2: 113,
-    F3: 114,
-    F4: 115,
-    F5: 116,
-    F6: 117,
-    F7: 118,
-    F8: 119,
-    F9: 120,
-    F10: 121,
-    F11: 122,
-    F12: 123,
-    /*
-                    -- Inconsisten Keys --
-        These keys aren't consistent through all browser
-    */
-    MINUS: 189,
-    EQUAL: 197
-};
-
-// Temporary crap
+/**********************************************************************
+*           GAME GLOBAL VARIABLES
+**********************************************************************/
 var player = new Player();
 
+/*
+* This function initializes the game engine and the canvas.
+* If the parameters aren't specified, the canvas size will
+* be set to 300 by default. Once the engine is initialized,
+* it calls the Main method, launching the game.
+*
+* @param  CanvasWidth   This is the desired width of the canvas
+* @param  CanvasHeight  This is the desired height of the canvas
+*/
 function FramworkInit (CanvasWidth, CanvasHeight) {
     // This function will be called when the game object is created
     canvas = document.createElement("Canvas");
@@ -122,6 +63,10 @@ function FramworkInit (CanvasWidth, CanvasHeight) {
     Main();
 }
 
+/*
+* This function will be called every frame and
+* is used to update variables of various objects.
+*/
 function Update () {
     // This function will be called every frame
     // Add code beneath
@@ -130,6 +75,10 @@ function Update () {
 
 }
 
+/*
+* This function will be called every frame and
+* is used to render various things from objects.
+*/
 function Render () {
     // This function will be called every frame
     // Refresh the screen
@@ -139,7 +88,12 @@ function Render () {
     player.Render();
 }
 
-// Sets the width and height of the canvas
+/*
+* This function sets the width and height of the canvas
+*
+* @param  Width   This is the desired width of the canvas
+* @param  Height  This is the desired height of the canvas
+*/
 function SetCanvasSize (Width, Height) {
     this.canvasWidth = Width;
     this.canvasHeight = Height;
@@ -147,7 +101,12 @@ function SetCanvasSize (Width, Height) {
     ctx.canvas.height = Height;
 }
 
-// Refreshes the canvas to a color [needs a color string]
+/*
+* This function sets the backgroung color of the canvas.
+* The color is set to #000 by default.
+*
+* @param  color   This is the desired backgroung color of the canvas
+*/
 function RefreshCanvas (color) {
     if (color === undefined)
         ctx.fillStyle = "#000";
@@ -157,6 +116,11 @@ function RefreshCanvas (color) {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
+/*
+* This function will be called every frame and
+* is the base of the engine. It calls the Update
+* and Render methods in order 60 times a second.
+*/
 function Main() {
     Update();
     Render();
