@@ -27,9 +27,20 @@ addEventListener("keyup", function (e) {
     delete KeysDown[e.keyCode];
 }, false);
 
-// Temporary crap
+/**********************************************************************
+*           GAME GLOBAL VARIABLES
+**********************************************************************/
 var player = new Player();
 
+/*
+* This function initializes the game engine and the canvas.
+* If the parameters aren't specified, the canvas size will
+* be set to 300 by default. Once the engine is initialized,
+* it calls the Main method, launching the game.
+*
+* @param  CanvasWidth   This is the desired width of the canvas
+* @param  CanvasHeight  This is the desired height of the canvas
+*/
 function FramworkInit (CanvasWidth, CanvasHeight) {
     // This function will be called when the game object is created
     canvas = document.createElement("Canvas");
@@ -52,6 +63,10 @@ function FramworkInit (CanvasWidth, CanvasHeight) {
     Main();
 }
 
+/*
+* This function will be called every frame and
+* is used to update variables of various objects.
+*/
 function Update () {
     // This function will be called every frame
     // Add code beneath
@@ -60,6 +75,10 @@ function Update () {
 
 }
 
+/*
+* This function will be called every frame and
+* is used to render various things from objects.
+*/
 function Render () {
     // This function will be called every frame
     // Refresh the screen
@@ -69,7 +88,12 @@ function Render () {
     player.Render();
 }
 
-// Sets the width and height of the canvas
+/*
+* This function sets the width and height of the canvas
+*
+* @param  Width   This is the desired width of the canvas
+* @param  Height  This is the desired height of the canvas
+*/
 function SetCanvasSize (Width, Height) {
     this.canvasWidth = Width;
     this.canvasHeight = Height;
@@ -77,7 +101,12 @@ function SetCanvasSize (Width, Height) {
     ctx.canvas.height = Height;
 }
 
-// Refreshes the canvas to a color [needs a color string]
+/*
+* This function sets the backgroung color of the canvas.
+* The color is set to #000 by default.
+*
+* @param  color   This is the desired backgroung color of the canvas
+*/
 function RefreshCanvas (color) {
     if (color === undefined)
         ctx.fillStyle = "#000";
@@ -87,6 +116,11 @@ function RefreshCanvas (color) {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
+/*
+* This function will be called every frame and
+* is the base of the engine. It calls the Update
+* and Render methods in order 60 times a second.
+*/
 function Main() {
     Update();
     Render();
