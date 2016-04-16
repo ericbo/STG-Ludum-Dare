@@ -10,8 +10,8 @@ function Player () {
   this.jumpVel = 5;
 
   this.model = {
-    width: 32,
-    height: 32,
+    width: 40,
+    height: 80,
     color: "#bd4d04"
   };
 

@@ -19,6 +19,11 @@ RequestAnimationFrame = window.requestAnimationFrame ||
 // Keyboard Events
 var KeysDown = {};
 
+//Camera offset (panning)
+var offset = 0;
+var maxOffset = 0;
+var mapWidth = 1200;
+
 addEventListener("keydown", function (e) {
     KeysDown[e.keyCode] = true;
 }, false);
@@ -65,6 +70,8 @@ function FramworkInit (CanvasWidth, CanvasHeight) {
     else
         canvasHeight = CanvasHeight;
 
+    maxOffset = mapWidth - canvasWidth; //Used for camear panning.
+
     SetCanvasSize(canvasWidth, canvasHeight);
 
     Main();
@@ -79,6 +86,26 @@ function Update () {
     // Add code beneath
 
     player.Update();
+
+    //Camear panning.
+    var canvasMidWidth = canvasWidth / 2;
+    var playerDistance = player.x - canvasMidWidth;
+
+    if(playerDistance > 0) {
+      if(offset + playerDistance >= maxOffset) {
+        offset = maxOffset;
+      } else {
+        offset += playerDistance;
+        player.x = canvasMidWidth;
+      }
+    } else if (offset != 0) {
+      if (offset + playerDistance <= 0) {
+        offset = 0;
+      } else {
+        offset += playerDistance;
+        player.x = canvasMidWidth;
+      }
+    }
 
 }
 
@@ -95,6 +122,7 @@ function Render () {
     player.Render();
 
     for (var platform in platforms) {
+      platforms[platform].offset = offset;
       platforms[platform].Render();
     }
 }
