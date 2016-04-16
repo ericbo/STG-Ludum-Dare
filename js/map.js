@@ -25,13 +25,26 @@ function demoMap() {
 
   //This needs a cleanup
   this.Render = function() {
-    var slowOffset = offset / 4;
-    var displayMultiplyer = Math.floor(slowOffset/canvasWidth);
+    var veryFastOffset = offset / 5;
+    var fastOffset = offset / 4;
+    var normalOffset = offset / 3;
+    var slowOffset = offset / 2;
 
-    for (var image in loadedImages) {
-      var img = loadedImages[image];
-      ctx.drawImage(loadedImages[image],canvasWidth * displayMultiplyer - slowOffset,0, canvasWidth, canvasHeight);
-      ctx.drawImage(loadedImages[image],(canvasWidth * displayMultiplyer + canvasWidth) - slowOffset,0, canvasWidth, canvasHeight);
-    }
+    var displayMultiplyer5 = Math.floor(veryFastOffset/canvasWidth);
+    var displayMultiplyer4 = Math.floor(fastOffset/canvasWidth);
+    var displayMultiplyer3 = Math.floor(normalOffset/canvasWidth);
+    var displayMultiplyer2 = Math.floor(slowOffset/canvasWidth);
+
+    ctx.drawImage(loadedImages[0],canvasWidth * displayMultiplyer5 - veryFastOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[0],(canvasWidth * displayMultiplyer5 + canvasWidth) - veryFastOffset,0, canvasWidth, canvasHeight);
+
+    ctx.drawImage(loadedImages[1],canvasWidth * displayMultiplyer4 - fastOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[1],(canvasWidth * displayMultiplyer4 + canvasWidth) - fastOffset,0, canvasWidth, canvasHeight);
+
+    ctx.drawImage(loadedImages[2],canvasWidth * displayMultiplyer3 - normalOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[2],(canvasWidth * displayMultiplyer3 + canvasWidth) - normalOffset,0, canvasWidth, canvasHeight);
+
+    ctx.drawImage(loadedImages[3],canvasWidth * displayMultiplyer2 - slowOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[3],(canvasWidth * displayMultiplyer2 + canvasWidth) - slowOffset,0, canvasWidth, canvasHeight);
   }
 }
