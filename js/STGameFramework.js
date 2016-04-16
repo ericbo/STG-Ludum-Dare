@@ -22,7 +22,7 @@ var KeysDown = {};
 //Camera offset (panning)
 var offset = 0;
 var maxOffset = 0;
-var mapWidth = 1200;
+var mapWidth = 5200;
 var map = new demoMap();
 map.loadImages();
 
@@ -44,8 +44,8 @@ platforms.push(new Platform(200,100,128,8));
 platforms.push(new Platform(300,150,128,8));
 platforms.push(new Platform(400,200,128,8));
 platforms.push(new Platform(500,250,128,8));
-platforms.push(new Platform(400,300,128,8));
-platforms.push(new Platform(0,350,1200,10));
+platforms.push(new Platform(600,300,128,8));
+platforms.push(new Platform(0,350,mapWidth,10));
 
 /*
 * This function initializes the game engine and the canvas.

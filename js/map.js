@@ -11,9 +11,9 @@ platforms.push(new Platform(0,350,1200,10));
 */
 
 function demoMap() {
-  var images = ['img/demoMap/skill-desc_0003_bg.png'];
+  var images = ['img/demoMap/skill-desc_0003_bg.png', 'img/demoMap/skill-desc_0002_far-buildings.png','img/demoMap/skill-desc_0001_buildings.png', 'img/demoMap/skill-desc_0000_foreground.png'];
   var loadedImages = [];
-  var width = 1200
+  var width = mapWidth
 
   this.loadImages = function() {
     for (var image in images) {
@@ -23,10 +23,15 @@ function demoMap() {
     }
   }
 
+  //This needs a cleanup
   this.Render = function() {
+    var slowOffset = offset / 4;
+    var displayMultiplyer = Math.floor(slowOffset/canvasWidth);
+
     for (var image in loadedImages) {
       var img = loadedImages[image];
-      ctx.drawImage(loadedImages[image],0,0, canvasWidth, canvasHeight);
+      ctx.drawImage(loadedImages[image],canvasWidth * displayMultiplyer - slowOffset,0, canvasWidth, canvasHeight);
+      ctx.drawImage(loadedImages[image],(canvasWidth * displayMultiplyer + canvasWidth) - slowOffset,0, canvasWidth, canvasHeight);
     }
   }
 }

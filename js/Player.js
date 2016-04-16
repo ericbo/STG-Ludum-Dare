@@ -3,7 +3,7 @@ function Player () {
   this.y = 0;
   this.prevX = 0;
   this.prevY = 0;
-  this.speed = 2;
+  this.speed = 6;
   this.isjumping = false;
   this.isOnGround = false;
   this.curVel = 0;
