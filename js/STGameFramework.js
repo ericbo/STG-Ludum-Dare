@@ -38,6 +38,7 @@ addEventListener("keyup", function (e) {
 *           GAME GLOBAL VARIABLES
 **********************************************************************/
 var player = new Player();
+player.loadImages();
 var platforms = [];
 platforms.push(new Platform(100,50,128,8));
 platforms.push(new Platform(200,100,128,8));
@@ -123,12 +124,10 @@ function Render () {
 
     map.Render();
 
-    // Add code beneath
-    player.Render();
-
     for (var platform in platforms) {
       platforms[platform].Render();
     }
+    player.Render();
 }
 
 /*
