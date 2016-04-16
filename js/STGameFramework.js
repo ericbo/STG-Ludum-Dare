@@ -19,6 +19,11 @@ RequestAnimationFrame = window.requestAnimationFrame ||
 // Keyboard Events
 var KeysDown = {};
 
+//Camera offset (panning)
+var offset = 0;
+var maxOffset = 0;
+var mapWidth = 1200;
+
 addEventListener("keydown", function (e) {
     KeysDown[e.keyCode] = true;
 }, false);
@@ -34,11 +39,11 @@ var player = new Player();
 var platforms = [];
 platforms.push(new Platform(100,50,128,8));
 platforms.push(new Platform(200,100,128,8));
-platforms.push(new Platform(300,150,128,8));
+platforms.push(new Platform(300,150,128,8,0));
 platforms.push(new Platform(400,200,128,8));
 platforms.push(new Platform(500,250,128,8));
 platforms.push(new Platform(400,300,128,8));
-platforms.push(new Platform(0,350,640,10));
+platforms.push(new Platform(0,350,640,10,0));
 
 /*
 * This function initializes the game engine and the canvas.
@@ -66,6 +71,8 @@ function FramworkInit (CanvasWidth, CanvasHeight) {
     else
         canvasHeight = CanvasHeight;
 
+    maxOffset = mapWidth - canvasWidth; //Used for camear panning.
+
     SetCanvasSize(canvasWidth, canvasHeight);
 
     Main();
@@ -80,6 +87,26 @@ function Update () {
     // Add code beneath
 
     player.Update();
+
+    //Camear panning.
+    var canvasMidWidth = canvasWidth / 2;
+    var playerDistance = player.x - canvasMidWidth;
+
+    if(playerDistance > 0) {
+      if(offset + playerDistance >= maxOffset) {
+        offset = maxOffset;
+      } else {
+        offset += playerDistance;
+        player.x = canvasMidWidth;
+      }
+    } else if (offset != 0) {
+      if (offset + playerDistance <= 0) {
+        offset = 0;
+      } else {
+        offset += playerDistance;
+        player.x = canvasMidWidth;
+      }
+    }
 
 }
 
