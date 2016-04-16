@@ -3,6 +3,17 @@
 //
 //
 //========================================================//
+DIRECTIONS = {
+  none : 0,
+  up : 1,
+  upRight : 2,
+  right : 3,
+  rightDown : 4,
+  down : 5,
+  leftDown : 6,
+  left : 7,
+  upLeft : 8
+};
 
 // Game canvas variables
 var canvas,
@@ -24,6 +35,7 @@ var offset = 0;
 var maxOffset = 0;
 var mapWidth = 5200;
 var map = new demoMap();
+var bullets = [];
 map.loadImages();
 
 addEventListener("keydown", function (e) {
@@ -111,6 +123,15 @@ function Update () {
       }
     }
 
+    // Update bullets
+    for (i in bullets) {
+      bullets[i].Update();
+      if (bullets[i].x > mapWidth)
+        bullets.splice(i, 1);
+      else if (bullets[i].x + bullets[i].model.width < 0)
+        bullets.splice(i, 1);
+    }
+
 }
 
 /*
@@ -127,6 +148,11 @@ function Render () {
     for (var platform in platforms) {
       platforms[platform].Render();
     }
+
+    // Render bullets
+    for (i in bullets)
+      bullets[i].Render();
+
     player.Render();
 }
 
