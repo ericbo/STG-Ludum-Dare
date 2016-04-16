@@ -52,25 +52,42 @@ function Player () {
       this.x + this.model.width < platforms[this.platformID].x - offset)
          this.isOnGround = false;
     }
-    
+
     // Check if the player is colliding with solid platforms
     for (var platform in platforms) {
       // Check the left
-      if (this.x >= platforms[platform].x + platforms[platform].model.width - offset &&
-      this.prevX <= platforms[platform].x + platforms[platform].model.width - offset &&
-      this.y < platforms[platform].y &&
-      this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
-      platforms[platform].type == 0 &&
-      (this.platformID != platform || !this.isOnGround))
-        this.x = platforms[platform].x + platforms[platform].model.width - offset;
-        
+      if (this.x < platforms[platform].x + platforms[platform].model.width  - offset &&
+          this.x + this.model.width > platforms[platform].x + platforms[platform].model.width - offset &&
+          this.y < platforms[platform].y &&
+          this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+          platforms[platform].type == 0 &&
+          this.platformID != platform){
+            this.x += this.speed;
+            console.log("Player's left collision");
+          }
+
       // Check the right
-      if (this.x + this.model.width > platforms[platform].x - offset &&
-      this.y < platforms[platform].y &&
-      this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
-      platforms[platform].type == 0 &&
-      (this.platformID != platform || !this.isOnGround))
-        this.x = platforms[platform].x - this.model.width - offset;
+      else if (this.x + this.model.width > platforms[platform].x - offset &&
+               this.x < platforms[platform].x + platforms[platform].model.width  - offset &&
+               this.y < platforms[platform].y &&
+               this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+               platforms[platform].type == 0 &&
+               this.platformID != platform){
+                this.x -= this.speed;
+                  console.log("Player's right collision");
+                }
+
+      else if(this.x < platforms[platform].x + platforms[platform].model.width - offset &&
+          this.x + this.model.width > platforms[platform].x - offset &&
+          this.y < platforms[platform].y + platforms[platform].model.height &&
+          this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+          this.prevY >= this.y &&
+          platforms[platform].type == 0 &&
+          this.platformID != platform){
+            this.y = platforms[platform].y + platforms[platform].model.height;
+            this.curVel = 0;
+            console.log(this.y);
+          }
     }
 
     // Check for key presses
@@ -95,7 +112,7 @@ function Player () {
         this.prevY = this.y;
         this.isOnGround = false;
       }
-      
+
     if (KEYS.DOWN in KeysDown)
       if (this.isOnGround && platforms[this.platformID].type == 1) {
         this.y += 1;
@@ -108,32 +125,32 @@ function Player () {
   this.Render = function () {
     ctx.fillStyle = this.model.color;
     ctx.fillRect(this.x, this.y, this.model.width, this.model.height);
-    
+
     // Collision debuging
     var touch = "#0f0";
     var noTouch = "#f00";
-    
+
     // Left side
     if (this.colLeft)
       ctx.fillStyle = touch;
     else
       ctx.fillStyle = noTouch;
     ctx.fillRect(this.x, this.y, 2, this.model.height);
-    
+
     // Right side
     if (this.colRight)
       ctx.fillStyle = touch;
     else
       ctx.fillStyle = noTouch;
     ctx.fillRect(this.x + this.model.width - 2, this.y, 2, this.model.height);
-    
+
     // Top side
     if (this.colTop)
       ctx.fillStyle = touch;
     else
       ctx.fillStyle = noTouch;
     ctx.fillRect(this.x, this.y, this.model.width, 2);
-    
+
     // Bottom side
     if (this.isOnGround)
       ctx.fillStyle = touch;
