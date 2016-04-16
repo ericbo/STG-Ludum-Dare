@@ -149,10 +149,13 @@ function Player () {
     var elapsedTime = new Date().getTime() - this.start;
     var frames = 1;
     var currentFrame = 0;
-    //var
+    var flipOffset = 0; //Takes into account offset interfering with sprite location.
 
-    if(offset == 0) {
-
+    //Fix sprite fliping when getting close to the left boundury.
+    if(offset == 0 || offset == maxOffset) {
+      var mid = canvasWidth / 2;
+      var dis = mid - this.x;
+      flipOffset = dis * 2;
     }
 
     //Idle right
@@ -172,7 +175,7 @@ function Player () {
       ctx.save()
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
-      ctx.drawImage(this.sprite, this.spriteCords.idle[currentFrame][0], this.spriteCords.idle[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width, this.y, this.model.width, this.model.height);
+      ctx.drawImage(this.sprite, this.spriteCords.idle[currentFrame][0], this.spriteCords.idle[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
       return;
     }
@@ -194,7 +197,7 @@ function Player () {
       ctx.save()
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
-      ctx.drawImage(this.sprite, this.spriteCords.walking[currentFrame][0], this.spriteCords.walking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width, this.y, this.model.width, this.model.height);
+      ctx.drawImage(this.sprite, this.spriteCords.walking[currentFrame][0], this.spriteCords.walking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
       return;
     }
@@ -216,7 +219,7 @@ function Player () {
       ctx.save()
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
-      ctx.drawImage(this.sprite, this.spriteCords.jumping[currentFrame][0], this.spriteCords.jumping[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width, this.y, this.model.width, this.model.height);
+      ctx.drawImage(this.sprite, this.spriteCords.jumping[currentFrame][0], this.spriteCords.jumping[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
     }
   };
