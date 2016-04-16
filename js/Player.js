@@ -142,7 +142,7 @@ function Player () {
       }
 
     // Shoot things
-    if (KEYS.SPACE in KeysDown) {
+    if (KEYS.J in KeysDown) {
       //bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, this.aimDirection));
       this.shooting.isShooting = true;
       aimPressed = true;
