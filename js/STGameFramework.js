@@ -27,6 +27,20 @@ RequestAnimationFrame = window.requestAnimationFrame ||
     window.mozRequestAnimationFrame ||
     window.msRequestAnimationFrame;
 
+//Global images
+IMAGES = ['img/Tile_Red.png', 'img/Fallthrough.png'];
+LOADED_IMAGES = [];
+
+function loadImages() {
+  for (var image in IMAGES) {
+    var tmpImage = new Image();
+    tmpImage.src = IMAGES[image];
+    LOADED_IMAGES.push(tmpImage);
+  }
+}
+
+loadImages();
+
 // Keyboard Events
 var KeysDown = {};
 
