@@ -4,11 +4,11 @@ function Bullet (x, y, direction) {
   this.prevX = x;
   this.prevY = y;
   this.direction = direction;
-  this.speed = 5;
+  this.speed = 15;
 
   this.model = {
-    width: 2,
-    height: 2,
+    width: 3,
+    height: 3,
     color: "#00ff73"
   };
 
