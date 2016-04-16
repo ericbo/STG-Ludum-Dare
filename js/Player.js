@@ -56,26 +56,37 @@ function Player () {
     // Check if the player is colliding with solid platforms
     for (var platform in platforms) {
       // Check the left
-      if (this.x < platforms[platform].x + platforms[platform].model.width - offset &&
+      if (this.x >= platforms[platform].x + platforms[platform].model.width - offset &&
+      this.prevX <= platforms[platform].x + platforms[platform].model.width - offset &&
       this.y < platforms[platform].y &&
       this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
       platforms[platform].type == 0 &&
       (this.platformID != platform || !this.isOnGround))
-        this.colLeft = true;
-      // else
-      //   this.colLeft = false;
+        this.x = platforms[platform].x + platforms[platform].model.width - offset;
+        
+      // Check the right
+      if (this.x + this.model.width > platforms[platform].x - offset &&
+      this.y < platforms[platform].y &&
+      this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+      platforms[platform].type == 0 &&
+      (this.platformID != platform || !this.isOnGround))
+        this.x = platforms[platform].x - this.model.width - offset;
     }
 
     // Check for key presses
     if (KEYS.RIGHT in KeysDown)
       if (this.x + this.model.width < canvasWidth) {
+        this.prevX = this.x;
         this.x += this.speed;
-        this.colLeft = false;
+        //this.colLeft = false;
       }
 
-    if (KEYS.LEFT in KeysDown && !this.colLeft)
-      if (this.x > 0)
+    if (KEYS.LEFT in KeysDown && !this.colLeft) {
+      if (this.x > 0) {
+        this.prevX = this.x;
         this.x -= this.speed;
+      }
+    }
 
     if (KEYS.SPACE in KeysDown || KEYS.UP in KeysDown)
       if (this.isOnGround) {
@@ -97,6 +108,38 @@ function Player () {
   this.Render = function () {
     ctx.fillStyle = this.model.color;
     ctx.fillRect(this.x, this.y, this.model.width, this.model.height);
+    
+    // Collision debuging
+    var touch = "#0f0";
+    var noTouch = "#f00";
+    
+    // Left side
+    if (this.colLeft)
+      ctx.fillStyle = touch;
+    else
+      ctx.fillStyle = noTouch;
+    ctx.fillRect(this.x, this.y, 2, this.model.height);
+    
+    // Right side
+    if (this.colRight)
+      ctx.fillStyle = touch;
+    else
+      ctx.fillStyle = noTouch;
+    ctx.fillRect(this.x + this.model.width - 2, this.y, 2, this.model.height);
+    
+    // Top side
+    if (this.colTop)
+      ctx.fillStyle = touch;
+    else
+      ctx.fillStyle = noTouch;
+    ctx.fillRect(this.x, this.y, this.model.width, 2);
+    
+    // Bottom side
+    if (this.isOnGround)
+      ctx.fillStyle = touch;
+    else
+      ctx.fillStyle = noTouch;
+    ctx.fillRect(this.x, this.y + this.model.height - 2, this.model.width, 2);
 
     ctx.fillStyle = "#48ff00";
     ctx.fillText("Current pos  (" + this.x + ", " + this.y + ")", 10, 20);
