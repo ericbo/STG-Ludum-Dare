@@ -11,7 +11,6 @@ function Player () {
   this.velIncrement = 0.5;
   this.jumpVel = 10;
   this.platformID = null;
-  this.sprite;
   this.image = "img/HeroFull.png"
   this.start = new Date().getTime(); //Used for animations
   this.direction = true; //True - right, false - left
