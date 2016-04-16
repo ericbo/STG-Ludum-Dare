@@ -11,7 +11,7 @@ platforms.push(new Platform(0,350,1200,10));
 */
 
 function demoMap() {
-  var images = ['img/demoMap/skill-desc_0003_bg.png', 'img/demoMap/skill-desc_0002_far-buildings.png','img/demoMap/skill-desc_0001_buildings.png', 'img/demoMap/skill-desc_0000_foreground.png'];
+  var images = ['img/Back.png', 'img/Mid.png','img/front.png'];
   var loadedImages = [];
   var width = mapWidth
 
@@ -27,12 +27,12 @@ function demoMap() {
   this.Render = function() {
     var veryFastOffset = offset / 5;
     var fastOffset = offset / 4;
-    var normalOffset = offset / 3;
+    //var normalOffset = offset / 3;
     var slowOffset = offset / 2;
 
     var displayMultiplyer5 = Math.floor(veryFastOffset/canvasWidth);
     var displayMultiplyer4 = Math.floor(fastOffset/canvasWidth);
-    var displayMultiplyer3 = Math.floor(normalOffset/canvasWidth);
+    //var displayMultiplyer3 = Math.floor(normalOffset/canvasWidth);
     var displayMultiplyer2 = Math.floor(slowOffset/canvasWidth);
 
     ctx.drawImage(loadedImages[0],canvasWidth * displayMultiplyer5 - veryFastOffset,0, canvasWidth, canvasHeight);
@@ -41,10 +41,10 @@ function demoMap() {
     ctx.drawImage(loadedImages[1],canvasWidth * displayMultiplyer4 - fastOffset,0, canvasWidth, canvasHeight);
     ctx.drawImage(loadedImages[1],(canvasWidth * displayMultiplyer4 + canvasWidth) - fastOffset,0, canvasWidth, canvasHeight);
 
-    ctx.drawImage(loadedImages[2],canvasWidth * displayMultiplyer3 - normalOffset,0, canvasWidth, canvasHeight);
-    ctx.drawImage(loadedImages[2],(canvasWidth * displayMultiplyer3 + canvasWidth) - normalOffset,0, canvasWidth, canvasHeight);
+    //ctx.drawImage(loadedImages[2],canvasWidth * displayMultiplyer3 - normalOffset,0, canvasWidth, canvasHeight);
+    //ctx.drawImage(loadedImages[2],(canvasWidth * displayMultiplyer3 + canvasWidth) - normalOffset,0, canvasWidth, canvasHeight);
 
-    ctx.drawImage(loadedImages[3],canvasWidth * displayMultiplyer2 - slowOffset,0, canvasWidth, canvasHeight);
-    ctx.drawImage(loadedImages[3],(canvasWidth * displayMultiplyer2 + canvasWidth) - slowOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[2],canvasWidth * displayMultiplyer2 - slowOffset,0, canvasWidth, canvasHeight);
+    ctx.drawImage(loadedImages[2],(canvasWidth * displayMultiplyer2 + canvasWidth) - slowOffset,0, canvasWidth, canvasHeight);
   }
 }
