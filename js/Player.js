@@ -17,6 +17,9 @@ function Player () {
   this.direction = true; //True - right, false - left
   this.moving = false;
   this.aimDirection = 0; //Default to none.
+  this.colLeft = false;
+  this.colRight = false;
+  this.colTop = false;
 
   this.model = {
     width: 40,
@@ -34,14 +37,14 @@ function Player () {
     var keyPressed = false;
     var aimPressed = false;
 
-    // Check collisions with the platforms
+    // Check collisions with the platforms while falling
     if (!this.isOnGround || this.curVel > 0) {
       for (var platform in platforms) {
-        // Check if player is inside one of the platforms
+        // Check if player is going through a platform
         if (platforms[platform].y >= this.prevY + this.model.height &&
-         platforms[platform].y <= this.y + this.model.height &&
-         this.x < platforms[platform].x + platforms[platform].model.width - offset &&
-         this.x + this.model.width > platforms[platform].x - offset) {
+        platforms[platform].y <= this.y + this.model.height &&
+        this.x < platforms[platform].x + platforms[platform].model.width - offset &&
+        this.x + this.model.width > platforms[platform].x - offset) {
           this.platformID = platform;
           this.isOnGround = true;
           this.y = platforms[this.platformID].y - this.model.height;
@@ -59,11 +62,11 @@ function Player () {
       this.y -= this.curVel;
 
     } else {
+      // Check if the player is walking off the platform
       if (this.x > platforms[this.platformID].x + platforms[this.platformID].model.width - offset ||
       this.x + this.model.width < platforms[this.platformID].x - offset)
          this.isOnGround = false;
     }
-
     // Move Right
     if (KEYS.D in KeysDown)
       if (this.x + this.model.width < canvasWidth)
@@ -86,6 +89,42 @@ function Player () {
         else
           keyPressed = true;
       }
+    // Check if the player is colliding with solid platforms
+    for (var platform in platforms) {
+      // Check the left
+      if (this.x < platforms[platform].x + platforms[platform].model.width  - offset &&
+          this.x + this.model.width > platforms[platform].x + platforms[platform].model.width - offset &&
+          this.y < platforms[platform].y &&
+          this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+          platforms[platform].type == 0 &&
+          this.platformID != platform){
+            this.x += this.speed;
+            console.log("Player's left collision");
+          }
+
+      // Check the right
+      else if (this.x + this.model.width > platforms[platform].x - offset &&
+               this.x < platforms[platform].x + platforms[platform].model.width  - offset &&
+               this.y < platforms[platform].y &&
+               this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+               platforms[platform].type == 0 &&
+               this.platformID != platform){
+                this.x -= this.speed;
+                  console.log("Player's right collision");
+                }
+
+      else if(this.x < platforms[platform].x + platforms[platform].model.width - offset &&
+          this.x + this.model.width > platforms[platform].x - offset &&
+          this.y < platforms[platform].y + platforms[platform].model.height &&
+          this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
+          this.prevY >= this.y &&
+          platforms[platform].type == 0 &&
+          this.platformID != platform){
+            this.y = platforms[platform].y + platforms[platform].model.height;
+            this.curVel = 0;
+            console.log(this.y);
+          }
+    }
 
     //Move Up
     if (KEYS.W in KeysDown)
@@ -95,7 +134,6 @@ function Player () {
         this.prevY = this.y;
         this.isOnGround = false;
       }
-
       //Aim Right
       if (KEYS.RIGHT in KeysDown)
       {
@@ -179,6 +217,14 @@ function Player () {
     ctx.fillText("Previous pos (" + this.prevX + ", " + this.prevY + ")", 10, 20);
     ctx.fillText("isOnGround - " + this.isOnGround, 10, 30);
     ctx.fillText("curVel - " + this.curVel, 10, 40);
+
+    if (KEYS.S in KeysDown)
+      if (this.isOnGround && platforms[this.platformID].type == 1) {
+        this.y += 1;
+        this.prevY = this.y;
+        this.isOnGround = false;
+      }
+
   };
 
   /*
