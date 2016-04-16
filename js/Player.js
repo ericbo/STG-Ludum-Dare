@@ -16,6 +16,7 @@ function Player () {
   this.start = new Date().getTime(); //Used for animations
   this.direction = true; //True - right, false - left
   this.moving = false;
+  this.aimDirection = 0; //Default to none.
 
   this.model = {
     width: 40,
@@ -31,6 +32,7 @@ function Player () {
 
   this.Update = function () {
     var keyPressed = false;
+    var aimPressed = false;
 
     // Check collisions with the platforms
     if (!this.isOnGround || this.curVel > 0) {
@@ -62,8 +64,8 @@ function Player () {
          this.isOnGround = false;
     }
 
-    // Check for key presses
-    if (KEYS.RIGHT in KeysDown)
+    // Move Right
+    if (KEYS.D in KeysDown)
       if (this.x + this.model.width < canvasWidth)
       {
         this.x += this.speed;
@@ -71,7 +73,8 @@ function Player () {
         keyPressed = true;
       }
 
-    if (KEYS.LEFT in KeysDown)
+    //Move Left
+    if (KEYS.A in KeysDown)
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -84,13 +87,31 @@ function Player () {
           keyPressed = true;
       }
 
-    if (KEYS.SPACE in KeysDown || KEYS.UP in KeysDown)
+    //Move Up
+    if (KEYS.W in KeysDown)
       if (this.isOnGround) {
         this.curVel = this.jumpVel;
         this.y -= 1;
         this.prevY = this.y;
         this.isOnGround = false;
       }
+
+      //Aim Right
+      if (KEYS.RIGHT in KeysDown)
+      {
+        aimPressed = true;
+        this.aimDirection = this.aim.right;
+      }
+
+      //Aim Left
+      if (KEYS.LEFT in KeysDown)
+      {
+        aimPressed = true;
+        this.aimDirection = this.aim.left;
+      }
+
+      if(aimPressed == false)
+        this.aimDirection = this.aim.none;
 
       this.moving = keyPressed;
   };
@@ -105,19 +126,51 @@ function Player () {
     if(this.direction)
       if(this.moving)
         if(this.isOnGround)
-          this.DrawSprite(this.spriteState.walkingRight)
+          if(this.aimDirection == this.aim.right)
+            this.DrawSprite(this.spriteState.aimWalkingRight);
+          else if (this.aimDirection == this.aim.left)
+            this.DrawSprite(this.spriteState.aimWalkingLeft);
+          else
+            this.DrawSprite(this.spriteState.walkingRight);
         else
-          this.DrawSprite(this.spriteState.jumpRight)
+          if(this.aimDirection == this.aim.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == this.aim.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpRight);
       else
-        this.DrawSprite(this.spriteState.idleRight);
+        if(this.aimDirection == this.aim.right)
+          this.DrawSprite(this.spriteState.aimGroundRight);
+        else if(this.aimDirection == this.aim.left)
+          this.DrawSprite(this.spriteState.aimGroundLeft);
+        else
+          this.DrawSprite(this.spriteState.idleRight);
     else {
       if(this.moving)
+        //If on ground and moving
         if(this.isOnGround)
-          this.DrawSprite(this.spriteState.walkingLeft);
+          if(this.aimDirection == this.aim.right)
+            this.DrawSprite(this.spriteState.aimWalkingRight);
+          else if(this.aimDirection == this.aim.left)
+            this.DrawSprite(this.spriteState.aimWalkingLeft);
+          else
+            this.DrawSprite(this.spriteState.walkingLeft);
+        //If freefalling
         else
-          this.DrawSprite(this.spriteState.jumpLeft);
+          if(this.aimDirection == this.aim.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == this.aim.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpLeft);
       else
-        this.DrawSprite(this.spriteState.idleLeft);
+        if(this.aimDirection == this.aim.right)
+          this.DrawSprite(this.spriteState.aimGroundRight);
+        else if(this.aimDirection == this.aim.left)
+          this.DrawSprite(this.spriteState.aimGroundLeft);
+        else
+          this.DrawSprite(this.spriteState.idleLeft);
     }
 
     //Draw debug window
@@ -221,6 +274,74 @@ function Player () {
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.jumping[currentFrame][0], this.spriteCords.jumping[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
+      return;
+    }
+
+    //Aim right on ground
+    if(state == this.spriteState.aimGroundRight) {
+      frames = this.spriteCords.aimGround.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.drawImage(this.sprite, this.spriteCords.aimGround[currentFrame][0], this.spriteCords.aimGround[currentFrame][1], this.model.width, this.model.height, this.x, this.y, this.model.width, this.model.height);
+      return;
+    }
+
+    //Aim left on ground
+    if(state == this.spriteState.aimGroundLeft) {
+      frames = this.spriteCords.aimGround.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.save()
+      ctx.translate(canvasWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(this.sprite, this.spriteCords.aimGround[currentFrame][0], this.spriteCords.aimGround[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
+      ctx.restore();
+      return;
+    }
+
+
+    //Aim righ falling
+    if(state == this.spriteState.aimFallingRight) {
+      frames = this.spriteCords.aimFalling.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.drawImage(this.sprite, this.spriteCords.aimFalling[currentFrame][0], this.spriteCords.aimFalling[currentFrame][1], this.model.width, this.model.height, this.x, this.y, this.model.width, this.model.height);
+      return;
+    }
+
+    //Aim left falling
+    if(state == this.spriteState.aimFallingLeft) {
+      frames = this.spriteCords.aimFalling.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.save()
+      ctx.translate(canvasWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(this.sprite, this.spriteCords.aimFalling[currentFrame][0], this.spriteCords.aimFalling[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
+      ctx.restore();
+      return;
+    }
+
+    //Aim right running
+    if(state == this.spriteState.aimWalkingRight) {
+      frames = this.spriteCords.aimWalking.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.drawImage(this.sprite, this.spriteCords.aimWalking[currentFrame][0], this.spriteCords.aimWalking[currentFrame][1], this.model.width, this.model.height, this.x, this.y, this.model.width, this.model.height);
+      return;
+    }
+
+    //Aim left running
+    if(state == this.spriteState.aimWalkingLeft) {
+      frames = this.spriteCords.aimWalking.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.save()
+      ctx.translate(canvasWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(this.sprite, this.spriteCords.aimWalking[currentFrame][0], this.spriteCords.aimWalking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
+      ctx.restore();
+      return;
     }
   };
 
@@ -230,12 +351,33 @@ function Player () {
     walkingRight : 2,
     walkingLeft : 3,
     jumpRight : 4,
-    jumpLeft : 5
+    jumpLeft : 5,
+    aimGroundRight : 6,
+    aimGroundLeft : 7,
+    aimFallingRight : 8,
+    aimFallingeft : 9,
+    aimWalkingRight : 10,
+    aimWalkingLeft : 11
   };
 
   this.spriteCords = {
     walking: [[6,88],[62,88],[116,88],[172,88]],
-    idle: [[8, 2]],
-    jumping: [[228, 88]]
+    idle: [[2, 2], [56, 2], [110, 2], [110, 2], [56, 2], [2, 2]],
+    jumping: [[228, 88]],
+    aimGround : [[228,172]],
+    aimFalling : [[276,88]],
+    aimWalking : [[6,172], [62,172], [116,172], [172,172]]
   };
+
+  this.aim = {
+    none : 0,
+    up : 1,
+    upRight : 2,
+    right : 3,
+    rightDown : 4,
+    down : 5,
+    leftDown : 6,
+    left : 7,
+    upLeft : 8
+  }
 }
