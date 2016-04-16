@@ -24,25 +24,25 @@ function Player () {
       this.curVel -= this.velIncrement;
       if (this.curVel > this.maxVel)
         this.curVel = this.maxVel;
-        
+
       this.y -= this.curVel;
     }
-    
+
     if (KEYS.RIGHT in KeysDown)
       if (this.x + this.model.width < canvasWidth)
         this.x += this.speed;
-        
+
     if (KEYS.LEFT in KeysDown)
       if (this.x > 0)
         this.x -= this.speed;
-        
-    if (KEYS.SPACE in KeysDown)
+
+    if (KEYS.SPACE in KeysDown || KEYS.UP in KeysDown)
       if (this.isOnGround) {
         this.curVel = this.jumpVel;
         this.y -= 1;
         this.isOnGround = false;
       }
-        
+
   };
 
   this.Render = function () {
