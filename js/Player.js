@@ -25,8 +25,8 @@ function Player () {
         // Check if player is inside one of the platforms
         if (platforms[platform].y >= this.prevY + this.model.height &&
          platforms[platform].y <= this.y + this.model.height &&
-         this.x < platforms[platform].x + platforms[platform].model.width &&
-         this.x + this.model.width > platforms[platform].x) {
+         this.x < platforms[platform].x + platforms[platform].model.width - offset &&
+         this.x + this.model.width > platforms[platform].x - offset) {
           this.platformID = platform;
           this.isOnGround = true;
           this.y = platforms[this.platformID].y - this.model.height;
@@ -44,8 +44,8 @@ function Player () {
       this.y -= this.curVel;
 
     } else {
-      if (this.x > platforms[this.platformID].x + platforms[this.platformID].model.width ||
-      this.x + this.model.width < platforms[this.platformID].x)
+      if (this.x > platforms[this.platformID].x + platforms[this.platformID].model.width - offset ||
+      this.x + this.model.width < platforms[this.platformID].x - offset)
          this.isOnGround = false;
     }
 

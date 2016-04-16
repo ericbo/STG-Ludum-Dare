@@ -123,7 +123,6 @@ function Render () {
     player.Render();
 
     for (var platform in platforms) {
-      platforms[platform].offset = offset;
       platforms[platform].Render();
     }
 }
