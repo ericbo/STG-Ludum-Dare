@@ -23,6 +23,8 @@ var KeysDown = {};
 var offset = 0;
 var maxOffset = 0;
 var mapWidth = 1200;
+var map = new demoMap();
+map.loadImages();
 
 addEventListener("keydown", function (e) {
     KeysDown[e.keyCode] = true;
@@ -43,7 +45,7 @@ platforms.push(new Platform(300,150,128,8));
 platforms.push(new Platform(400,200,128,8));
 platforms.push(new Platform(500,250,128,8));
 platforms.push(new Platform(400,300,128,8));
-platforms.push(new Platform(0,350,640,10));
+platforms.push(new Platform(0,350,1200,10));
 
 /*
 * This function initializes the game engine and the canvas.
@@ -119,6 +121,8 @@ function Render () {
     // Refresh the screen
     RefreshCanvas(/* Color */);
 
+    map.Render();
+
     // Add code beneath
     player.Render();
 
@@ -147,12 +151,7 @@ function SetCanvasSize (Width, Height) {
 * @param  color   This is the desired backgroung color of the canvas
 */
 function RefreshCanvas (color) {
-    if (color === undefined)
-        ctx.fillStyle = "#000";
-    else
-        ctx.fillStyle = color;
-
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  //Do something else.
 }
 
 /*
@@ -161,6 +160,7 @@ function RefreshCanvas (color) {
 * and Render methods in order 60 times a second.
 */
 function Main() {
+    ctx.clearRect(0,0,canvasWidth,canvasHeight);
     Update();
     Render();
     RequestAnimationFrame(Main);
