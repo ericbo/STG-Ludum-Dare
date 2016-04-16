@@ -133,22 +133,26 @@ function Player () {
         this.prevY = this.y;
         this.isOnGround = false;
       }
-      //Aim Right
-      if (KEYS.RIGHT in KeysDown)
-      {
-        aimPressed = true;
-        this.aimDirection = this.aim.right;
-      }
+    //Aim Right
+    if (KEYS.RIGHT in KeysDown)
+    {
+      aimPressed = true;
+      this.aimDirection = DIRECTIONS.right;
+    }
 
-      //Aim Left
-      if (KEYS.LEFT in KeysDown)
-      {
-        aimPressed = true;
-        this.aimDirection = this.aim.left;
-      }
+    //Aim Left
+    if (KEYS.LEFT in KeysDown)
+    {
+      aimPressed = true;
+      this.aimDirection = DIRECTIONS.left;
+    }
 
-      if(aimPressed == false)
-        this.aimDirection = this.aim.none;
+    // Shoot things
+    if (KEYS.SPACE in KeysDown && this.aimDirection > DIRECTIONS.none)
+      bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, this.aimDirection));
+
+    if(aimPressed == false)
+      this.aimDirection = DIRECTIONS.none;
 
       this.moving = keyPressed;
   };
@@ -163,23 +167,23 @@ function Player () {
     if(this.direction)
       if(this.moving)
         if(this.isOnGround)
-          if(this.aimDirection == this.aim.right)
+          if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimWalkingRight);
-          else if (this.aimDirection == this.aim.left)
+          else if (this.aimDirection == DIRECTIONS.left)
             this.DrawSprite(this.spriteState.aimWalkingLeft);
           else
             this.DrawSprite(this.spriteState.walkingRight);
         else
-          if(this.aimDirection == this.aim.right)
+          if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimFallingRight);
-          else if(this.aimDirection == this.aim.left)
+          else if(this.aimDirection == DIRECTIONS.left)
             this.DrawSprite(this.spriteState.aimFallingLeft);
           else
             this.DrawSprite(this.spriteState.jumpRight);
       else
-        if(this.aimDirection == this.aim.right)
+        if(this.aimDirection == DIRECTIONS.right)
           this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == this.aim.left)
+        else if(this.aimDirection == DIRECTIONS.left)
           this.DrawSprite(this.spriteState.aimGroundLeft);
         else
           this.DrawSprite(this.spriteState.idleRight);
@@ -187,24 +191,24 @@ function Player () {
       if(this.moving)
         //If on ground and moving
         if(this.isOnGround)
-          if(this.aimDirection == this.aim.right)
+          if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimWalkingRight);
-          else if(this.aimDirection == this.aim.left)
+          else if(this.aimDirection == DIRECTIONS.left)
             this.DrawSprite(this.spriteState.aimWalkingLeft);
           else
             this.DrawSprite(this.spriteState.walkingLeft);
         //If freefalling
         else
-          if(this.aimDirection == this.aim.right)
+          if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimFallingRight);
-          else if(this.aimDirection == this.aim.left)
+          else if(this.aimDirection == DIRECTIONS.left)
             this.DrawSprite(this.spriteState.aimFallingLeft);
           else
             this.DrawSprite(this.spriteState.jumpLeft);
       else
-        if(this.aimDirection == this.aim.right)
+        if(this.aimDirection == DIRECTIONS.right)
           this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == this.aim.left)
+        else if(this.aimDirection == DIRECTIONS.left)
           this.DrawSprite(this.spriteState.aimGroundLeft);
         else
           this.DrawSprite(this.spriteState.idleLeft);
@@ -413,16 +417,4 @@ function Player () {
     aimFalling : [[276,88]],
     aimWalking : [[6,172], [62,172], [116,172], [172,172]]
   };
-
-  this.aim = {
-    none : 0,
-    up : 1,
-    upRight : 2,
-    right : 3,
-    rightDown : 4,
-    down : 5,
-    leftDown : 6,
-    left : 7,
-    upLeft : 8
-  }
 }
