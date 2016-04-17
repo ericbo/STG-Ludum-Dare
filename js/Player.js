@@ -93,7 +93,7 @@ function Player () {
       }
 
     //Move Left
-    if (KEYS.A in KeysDown)
+    if (KEYS.A in KeysDown){
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -105,6 +105,10 @@ function Player () {
         else
           keyPressed = true;
       }
+      else{
+        this.x = 1
+      }
+    }
 
     // Dashing
     if (KEYS.SPACE in KeysDown && this.dash.isReady)
@@ -122,9 +126,12 @@ function Player () {
       if (this.direction) {
         this.prevX = this.x;
         this.x += this.speed * 3;
-      } else {
+      } else if (this. x > 0){
         this.prevX = this.x;
         this.x -= this.speed * 3;
+      }
+      else{
+        this.x = 1;
       }
     }
 
