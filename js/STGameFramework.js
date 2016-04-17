@@ -71,7 +71,7 @@ platforms.push(new Platform(800,175,200));
 platforms.push(new Platform(600,235,200));
 platforms.push(new Platform(400,300,200));
 platforms.push(new Platform(0,350,mapWidth,20,0));
-
+enemies = [];
 enemies.push(new Billy(200, 298));
 /*
 * This function initializes the game engine and the canvas.
