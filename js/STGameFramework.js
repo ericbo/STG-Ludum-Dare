@@ -58,7 +58,7 @@ platforms.push(new Platform(300,150,128,8,0));
 platforms.push(new Platform(400,200,128,8));
 platforms.push(new Platform(500,250,128,8,0));
 platforms.push(new Platform(400,300,128,8));
-platforms.push(new Platform(0,350,640,10,0));
+platforms.push(new Platform(0,350,mapWidth,10,0));
 
 /*
 * This function initializes the game engine and the canvas.
