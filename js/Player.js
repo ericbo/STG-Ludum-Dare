@@ -153,10 +153,10 @@ function Player () {
         this.shooting.curTimer = this.shooting.maxTimer;
         if (this.direction) {
           this.aimDirection = DIRECTIONS.right;
-          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.right));
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 10, DIRECTIONS.right));
         } else {
           this.aimDirection = DIRECTIONS.left;
-          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.left));
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 10, DIRECTIONS.left));
         }
       }
     }
