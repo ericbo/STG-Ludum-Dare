@@ -93,7 +93,7 @@ function Player () {
       }
 
     //Move Left
-    if (KEYS.A in KeysDown)
+    if (KEYS.A in KeysDown){
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -105,6 +105,10 @@ function Player () {
         else
           keyPressed = true;
       }
+      else{
+        this.x = 1
+      }
+    }
 
     // Dashing
     if (KEYS.SPACE in KeysDown && this.dash.isReady)
@@ -122,9 +126,12 @@ function Player () {
       if (this.direction) {
         this.prevX = this.x;
         this.x += this.speed * 3;
-      } else {
+      } else if (this. x > 0){
         this.prevX = this.x;
         this.x -= this.speed * 3;
+      }
+      else{
+        this.x = 1;
       }
     }
 
@@ -137,7 +144,7 @@ function Player () {
           this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
           platforms[platform].type == 0 &&
           this.platformID != platform){
-            this.x += this.speed;
+            this.x = platforms[platform].x + platforms[platform].model.width - offset;
             console.log("Player's left collision");
           }
 
@@ -148,8 +155,9 @@ function Player () {
                this.y + this.model.height > platforms[platform].y + platforms[platform].model.height &&
                platforms[platform].type == 0 &&
                this.platformID != platform){
-                this.x -= this.speed;
-                  console.log("Player's right collision");
+                this.x = platforms[platform].x;
+                  console.log("Platform x: " + platforms[platform].x);
+                  console.log("Player x:   " + this.x);
                 }
 
       else if(this.x < platforms[platform].x + platforms[platform].model.width - offset &&
@@ -185,10 +193,10 @@ function Player () {
         this.shooting.curTimer = this.shooting.maxTimer;
         if (this.direction) {
           this.aimDirection = DIRECTIONS.right;
-          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.right));
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 10, DIRECTIONS.right));
         } else {
           this.aimDirection = DIRECTIONS.left;
-          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.left));
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 10, DIRECTIONS.left));
         }
       }
     }

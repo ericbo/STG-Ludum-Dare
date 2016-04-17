@@ -7,8 +7,8 @@ function Bullet (x, y, direction) {
   this.speed = 15;
 
   this.model = {
-    width: 3,
-    height: 3,
+    width: 10,
+    height: 10,
     color: "#00ff73"
   };
 
