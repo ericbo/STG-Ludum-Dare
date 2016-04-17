@@ -84,7 +84,7 @@ function Player () {
          this.isOnGround = false;
     }
     // Move Right
-    if (KEYS.D in KeysDown && !this.dash.isDashing)
+    if (KEYS.RIGHT in KeysDown && !this.dash.isDashing)
       if (this.x + this.model.width < canvasWidth)
       {
         this.x += this.speed;
@@ -93,7 +93,7 @@ function Player () {
       }
 
     //Move Left
-    if (KEYS.A in KeysDown && !this.dash.isDashing)
+    if (KEYS.LEFT in KeysDown && !this.dash.isDashing)
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -107,7 +107,7 @@ function Player () {
       }
 
     // Dashing
-    if (KEYS.SPACE in KeysDown && this.dash.isReady)
+    if (KEYS.X in KeysDown && this.dash.isReady)
       if (!dashPressed) {
         dashPressed = true;
         this.dash.isReady = false;
@@ -168,15 +168,24 @@ function Player () {
     }
 
     //Move Up
-    if (KEYS.W in KeysDown)
+    if (KEYS.UP in KeysDown)
       if (this.isOnGround) {
         this.curVel = this.jumpVel;
         this.y -= 1;
         this.prevY = this.y;
         this.isOnGround = false;
       }
+    
+    // Move down from platforms
+    if (KEYS.DOWN in KeysDown)
+      if (this.isOnGround && platforms[this.platformID].type == 1) {
+        this.y += 1;
+        this.prevY = this.y;
+        this.isOnGround = false;
+      }
+      
     // Shoot things
-    if (KEYS.J in KeysDown) {
+    if (KEYS.C in KeysDown) {
       this.shooting.isShooting = true;
       aimPressed = true;
     } else
@@ -213,7 +222,11 @@ function Player () {
     if(!aimPressed)
       this.aimDirection = DIRECTIONS.none;
 
-      this.moving = keyPressed;
+    this.moving = keyPressed;
+    
+    // Round position 
+    this.x = Math.round(this.x);
+    this.prevX = Math.round(this.prevX);
   };
 
   this.Render = function () {
@@ -275,20 +288,18 @@ function Player () {
 
     //Draw debug window
     ctx.fillStyle = "#48ff00";
-    ctx.fillText("Current pos  (" + this.x + ", " + this.y + ")", 10, 10);
-    ctx.fillText("Previous pos (" + this.prevX + ", " + this.prevY + ")", 10, 20);
+    ctx.fillText("Current pos  (" + (this.x + offset) + ", " + this.y + ")", 10, 10);
+    ctx.fillText("Previous pos (" + (this.prevX + offset) + ", " + this.prevY + ")", 10, 20);
     ctx.fillText("isOnGround - " + this.isOnGround, 10, 30);
     ctx.fillText("curVel - " + this.curVel, 10, 40);
     ctx.fillText("isDashing - " + this.dash.isDashing, 10, 50);
     ctx.fillText("Dash Cooldown - " + this.dash.curCooldown, 10, 60);
     ctx.fillText("Dash Timer - " + this.dash.curDash, 10, 70);
-
-    if (KEYS.S in KeysDown)
-      if (this.isOnGround && platforms[this.platformID].type == 1) {
-        this.y += 1;
-        this.prevY = this.y;
-        this.isOnGround = false;
-      }
+    
+    // Draw keys
+    ctx.fillText("Arrow keys - move", 500, 10);
+    ctx.fillText("C - Shoot", 500, 20);
+    ctx.fillText("X - Dash", 500, 30);
 
   };
 
