@@ -2,7 +2,7 @@
 //
 //  0 - Solid
 //  1 - Fall through/jump through (transparent)
-function Platform(x,y,width,height,type = 0) {
+function Platform(x,y,width,type = 1) {
   this.x = x;
   this.y = y;
   this.length = 0;
@@ -10,7 +10,7 @@ function Platform(x,y,width,height,type = 0) {
 
   this.model = {
     width: width,
-    height: height
+    height: 15
   };
 
   this.Render = function () {

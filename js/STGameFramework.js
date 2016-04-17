@@ -66,13 +66,11 @@ addEventListener("keyup", function (e) {
 var player = new Player();
 player.loadImages();
 var platforms = [];
-platforms.push(new Platform(100,50,100,12));
-platforms.push(new Platform(200,100,100,12));
-platforms.push(new Platform(300,150,100,12,0));
-platforms.push(new Platform(400,200,100,12));
-platforms.push(new Platform(500,250,100,12,0));
-platforms.push(new Platform(400,300,200,12,1));
-platforms.push(new Platform(0,350,mapWidth,100,0));
+platforms.push(new Platform(1000,100,200));
+platforms.push(new Platform(800,175,200));
+platforms.push(new Platform(600,235,200));
+platforms.push(new Platform(400,300,200));
+platforms.push(new Platform(0,350,mapWidth,20,0));
 
 /*
 * This function initializes the game engine and the canvas.
