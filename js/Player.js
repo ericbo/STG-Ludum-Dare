@@ -119,13 +119,14 @@ function Player () {
       dashPressed = false;
 
     if (this.dash.isDashing) {
+      var dashSpeed = this.dash.curDash < 10 ?  (this.speed * 2) / (10 - this.dash.curDash) : this.speed * 2;
       keyPressed = true;
       this.prevX = this.x;
       
       if (this.direction)
-        this.x += this.speed * 3;
+        this.x += dashSpeed;
       else
-        this.x -= this.speed * 3;
+        this.x -= dashSpeed;
       
     }
 
