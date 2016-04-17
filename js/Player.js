@@ -20,6 +20,7 @@ function Player () {
   this.colLeft = false;
   this.colRight = false;
   this.colTop = false;
+  this.name = "Bert";
 
   this.shooting = {
     maxTimer: 10,
