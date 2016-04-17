@@ -27,6 +27,15 @@ function Player () {
     isShooting: false
   };
 
+  this.dash = {
+    maxCooldown: 50,
+    curCooldown: 0,
+    maxDash: 20,
+    curDash: 0,
+    isDashing: false,
+    isReady: true
+  };
+
   this.model = {
     width: 40,
     height: 80,
@@ -42,6 +51,7 @@ function Player () {
   this.Update = function () {
     var keyPressed = false;
     var aimPressed = false;
+    var dashPressed = false;
 
     // Check collisions with the platforms while falling
     if (!this.isOnGround || this.curVel > 0) {
@@ -95,6 +105,29 @@ function Player () {
         else
           keyPressed = true;
       }
+
+    // Dashing
+    if (KEYS.SPACE in KeysDown && this.dash.isReady)
+      if (!dashPressed) {
+        dashPressed = true;
+        this.dash.isReady = false;
+        this.dash.isDashing = true;
+        this.dash.curCooldown = this.dash.maxCooldown;
+        this.dash.curDash = this.dash.maxDash;
+      }
+    else
+      dashPressed = false;
+
+    if (this.dash.isDashing) {
+      if (this.direction) {
+        this.prevX = this.x;
+        this.x += this.speed * 3;
+      } else {
+        this.prevX = this.x;
+        this.x -= this.speed * 3;
+      }
+    }
+
     // Check if the player is colliding with solid platforms
     for (var platform in platforms) {
       // Check the left
@@ -142,7 +175,6 @@ function Player () {
       }
     // Shoot things
     if (KEYS.J in KeysDown) {
-      //bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, this.aimDirection));
       this.shooting.isShooting = true;
       aimPressed = true;
     } else
@@ -160,8 +192,21 @@ function Player () {
         }
       }
     }
+    // Update the timers
+    if (this.shooting.curTimer > 0)
+      this.shooting.curTimer--;
 
-    this.shooting.curTimer--;
+    if (this.dash.curCooldown > 0)
+      this.dash.curCooldown--;
+
+    if (this.dash.curDash > 0)
+      this.dash.curDash--;
+
+    if (this.dash.curCooldown === 0)
+      this.dash.isReady = true;
+
+    if (this.dash.curDash === 0)
+      this.dash.isDashing = false;
 
     if(!aimPressed)
       this.aimDirection = DIRECTIONS.none;
@@ -232,6 +277,9 @@ function Player () {
     ctx.fillText("Previous pos (" + this.prevX + ", " + this.prevY + ")", 10, 20);
     ctx.fillText("isOnGround - " + this.isOnGround, 10, 30);
     ctx.fillText("curVel - " + this.curVel, 10, 40);
+    ctx.fillText("isDashing - " + this.dash.isDashing, 10, 50);
+    ctx.fillText("Dash Cooldown - " + this.dash.curCooldown, 10, 60);
+    ctx.fillText("Dash Timer - " + this.dash.curDash, 10, 70);
 
     if (KEYS.S in KeysDown)
       if (this.isOnGround && platforms[this.platformID].type == 1) {

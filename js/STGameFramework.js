@@ -72,6 +72,7 @@ platforms.push(new Platform(600,235,200));
 platforms.push(new Platform(400,300,200));
 platforms.push(new Platform(0,350,mapWidth,20,0));
 
+
 /*
 * This function initializes the game engine and the canvas.
 * If the parameters aren't specified, the canvas size will
