@@ -41,7 +41,9 @@ function Player () {
   };
 
   this.model = {
-    width: 40,
+    dashWidth: 80,
+    defaultWidth: 40,
+    width: this.defaultWidth,
     height: 80,
     color: "#bd4d04"
   };
@@ -115,6 +117,7 @@ function Player () {
     if (KEYS.X in KeysDown && this.dash.isReady)
       if (!dashPressed) {
         dashPressed = true;
+        this.model.width = this.model.dashWidth;
         this.dash.isReady = false;
         this.dash.isDashing = true;
         this.dash.curCooldown = this.dash.maxCooldown;
@@ -233,8 +236,10 @@ function Player () {
     if (this.dash.curCooldown === 0)
       this.dash.isReady = true;
 
-    if (this.dash.curDash === 0)
+    if (this.dash.curDash === 0) {
       this.dash.isDashing = false;
+      this.model.width = this.model.defaultWidth;
+    }
 
     if(!aimPressed)
       this.aimDirection = DIRECTIONS.none;
@@ -253,8 +258,10 @@ function Player () {
     //ctx.fillRect(this.x, this.y, this.model.width, this.model.height);
 
     //Display correct animiation sprite based on the heros position.
-    if(this.direction)
-      if(this.moving)
+    if(this.direction)    // Right
+      if (this.dash.isDashing)
+        this.DrawSprite(this.spriteState.dashingRight);
+      else if(this.moving)
         if(this.isOnGround)
           if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimWalkingRight);
@@ -284,8 +291,10 @@ function Player () {
             this.DrawSprite(this.spriteState.aimGroundLeft);
           else
             this.DrawSprite(this.spriteState.idleRight);
-    else {
-      if(this.moving)
+    else {            // Left
+      if (this.dash.isDashing)
+        this.DrawSprite(this.spriteState.dashingLeft);
+      else if(this.moving)
         //If on ground and moving
         if(this.isOnGround)
           if(this.aimDirection == DIRECTIONS.right)
@@ -322,7 +331,7 @@ function Player () {
     //Draw debug window
     ctx.fillStyle = "#48ff00";
     ctx.fillText("Current pos  (" + (this.x + offset) + ", " + this.y + ")", 10, 10);
-    ctx.fillText("Previous pos (" + (this.prevX + offset) + ", " + this.prevY + ")", 10, 20);
+    ctx.fillText("Model Size (" + this.model.width + ", " + this.model.height + ")", 10, 20);
     ctx.fillText("isOnGround - " + this.isOnGround, 10, 30);
     ctx.fillText("curVel - " + this.curVel, 10, 40);
     ctx.fillText("isDashing - " + this.dash.isDashing, 10, 50);
@@ -385,7 +394,7 @@ function Player () {
       frames = this.spriteCords.idle.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.idle[currentFrame][0], this.spriteCords.idle[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -407,7 +416,7 @@ function Player () {
       frames = this.spriteCords.walking.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.walking[currentFrame][0], this.spriteCords.walking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -429,7 +438,7 @@ function Player () {
       frames = this.spriteCords.jumping.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.jumping[currentFrame][0], this.spriteCords.jumping[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -451,7 +460,7 @@ function Player () {
       frames = this.spriteCords.aimGround.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimGround[currentFrame][0], this.spriteCords.aimGround[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -474,7 +483,7 @@ function Player () {
       frames = this.spriteCords.aimFalling.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimFalling[currentFrame][0], this.spriteCords.aimFalling[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -496,10 +505,32 @@ function Player () {
       frames = this.spriteCords.aimWalking.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimWalking[currentFrame][0], this.spriteCords.aimWalking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
+      ctx.restore();
+      return;
+    }
+    
+    // Dashing right
+    if(state == this.spriteState.dashingRight) {
+      frames = this.spriteCords.dashing.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.drawImage(this.sprite, this.spriteCords.dashing[currentFrame][0], this.spriteCords.dashing[currentFrame][1], this.model.width, this.model.height, this.x, this.y, this.model.width, this.model.height);
+      return;
+    }
+    
+    // Dashing left
+    if(state == this.spriteState.dashingLeft) {
+      frames = this.spriteCords.dashing.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.save();
+      ctx.translate(canvasWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(this.sprite, this.spriteCords.dashing[currentFrame][0], this.spriteCords.dashing[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
       return;
     }
@@ -517,7 +548,9 @@ function Player () {
     aimFallingRight : 8,
     aimFallingeft : 9,
     aimWalkingRight : 10,
-    aimWalkingLeft : 11
+    aimWalkingLeft : 11,
+    dashingLeft : 12,
+    dashingRight : 13
   };
 
   this.spriteCords = {
@@ -526,6 +559,7 @@ function Player () {
     jumping: [[228, 88]],
     aimGround : [[228,172]],
     aimFalling : [[276,88]],
-    aimWalking : [[6,172], [62,172], [116,172], [172,172]]
+    aimWalking : [[6,172], [62,172], [116,172], [172,172]],
+    dashing : [[222, 2], [308, 2]]
   };
 }
