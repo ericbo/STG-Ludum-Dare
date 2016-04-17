@@ -20,13 +20,13 @@ function Player () {
   this.colLeft = false;
   this.colRight = false;
   this.colTop = false;
-  
+
   this.shooting = {
     maxTimer: 10,
     curTimer: 0,
     isShooting: false
   };
-  
+
   this.dash = {
     maxCooldown: 50,
     curCooldown: 0,
@@ -84,7 +84,7 @@ function Player () {
          this.isOnGround = false;
     }
     // Move Right
-    if (KEYS.D in KeysDown)
+    if (KEYS.D in KeysDown && !this.dash.isDashing)
       if (this.x + this.model.width < canvasWidth)
       {
         this.x += this.speed;
@@ -93,7 +93,7 @@ function Player () {
       }
 
     //Move Left
-    if (KEYS.A in KeysDown)
+    if (KEYS.A in KeysDown && !this.dash.isDashing)
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -105,7 +105,7 @@ function Player () {
         else
           keyPressed = true;
       }
-      
+
     // Dashing
     if (KEYS.SPACE in KeysDown && this.dash.isReady)
       if (!dashPressed) {
@@ -117,17 +117,18 @@ function Player () {
       }
     else
       dashPressed = false;
-    
+
     if (this.dash.isDashing) {
-      if (this.direction) {
-        this.prevX = this.x;
+      keyPressed = true;
+      this.prevX = this.x;
+      
+      if (this.direction)
         this.x += this.speed * 3;
-      } else {
-        this.prevX = this.x;
+      else
         this.x -= this.speed * 3;
-      }
+      
     }
-    
+
     // Check if the player is colliding with solid platforms
     for (var platform in platforms) {
       // Check the left
@@ -173,18 +174,17 @@ function Player () {
         this.prevY = this.y;
         this.isOnGround = false;
       }
-
     // Shoot things
     if (KEYS.J in KeysDown) {
       this.shooting.isShooting = true;
       aimPressed = true;
     } else
       this.shooting.isShooting = false;
-    
+
     if (this.shooting.isShooting) {
       if (this.shooting.curTimer <= 0) {
         this.shooting.curTimer = this.shooting.maxTimer;
-        if (this.direction) { 
+        if (this.direction) {
           this.aimDirection = DIRECTIONS.right;
           bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.right));
         } else {
@@ -193,20 +193,19 @@ function Player () {
         }
       }
     }
-    
     // Update the timers
     if (this.shooting.curTimer > 0)
       this.shooting.curTimer--;
-    
+
     if (this.dash.curCooldown > 0)
       this.dash.curCooldown--;
-    
+
     if (this.dash.curDash > 0)
       this.dash.curDash--;
-      
+
     if (this.dash.curCooldown === 0)
       this.dash.isReady = true;
-    
+
     if (this.dash.curDash === 0)
       this.dash.isDashing = false;
 
