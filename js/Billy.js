@@ -29,6 +29,12 @@ function Billy (x, y) {
         this.direction = true;
       }
     }
+    // If Billy is on player, remove from array & explode
+    // TODO Add explosion
+    else if (this.y < player.y + player.model.height){
+      this.die()
+      player.y = 400 // Temp kill player
+    }
   }
 
   this.Render = function() {
@@ -52,6 +58,16 @@ function Billy (x, y) {
           //ctx.drawImage(LOADED_IMAGES[2], this.spriteCords[currentFrame][0], this.spriteCords[currentFrame][1], this.model.width, this.model.height, this.model.x + dis , this.y, this.model.width, this.model.height);
         ctx.restore();
       }
+  }
+
+  // Remove the enemy from the array
+  // Resize array accordingly
+  this.die = function(){
+    for(var i = 0; i < enemies.length; i++)
+      if(enemies[i] == this){
+        enemies.splice(i, i+1);
+        break;
+    }
   }
 
   this.spriteCords = [[0,0],[37,0],[74,0],[74,0],[37,0],[0,0]];
