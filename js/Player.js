@@ -11,7 +11,8 @@ function Player () {
   this.velIncrement = 0.5;
   this.jumpVel = 10;
   this.platformID = null;
-  this.image = "img/HeroFull.png"
+  this.sprite;
+  this.image = "img/HeroFull.png";
   this.start = new Date().getTime(); //Used for animations
   this.direction = true; //True - right, false - left
   this.moving = false;
@@ -19,6 +20,12 @@ function Player () {
   this.colLeft = false;
   this.colRight = false;
   this.colTop = false;
+
+  this.shooting = {
+    maxTimer: 10,
+    curTimer: 0,
+    isShooting: false
+  };
 
   this.model = {
     width: 40,
@@ -30,7 +37,7 @@ function Player () {
     var tmpImage = new Image();
     tmpImage.src = this.image;
     this.sprite = tmpImage;
-  }
+  };
 
   this.Update = function () {
     var keyPressed = false;
@@ -133,25 +140,30 @@ function Player () {
         this.prevY = this.y;
         this.isOnGround = false;
       }
-    //Aim Right
-    if (KEYS.RIGHT in KeysDown)
-    {
-      aimPressed = true;
-      this.aimDirection = DIRECTIONS.right;
-    }
-
-    //Aim Left
-    if (KEYS.LEFT in KeysDown)
-    {
-      aimPressed = true;
-      this.aimDirection = DIRECTIONS.left;
-    }
-
     // Shoot things
-    if (KEYS.SPACE in KeysDown && this.aimDirection > DIRECTIONS.none)
-      bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, this.aimDirection));
+    if (KEYS.J in KeysDown) {
+      //bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, this.aimDirection));
+      this.shooting.isShooting = true;
+      aimPressed = true;
+    } else
+      this.shooting.isShooting = false;
 
-    if(aimPressed == false)
+    if (this.shooting.isShooting) {
+      if (this.shooting.curTimer <= 0) {
+        this.shooting.curTimer = this.shooting.maxTimer;
+        if (this.direction) {
+          this.aimDirection = DIRECTIONS.right;
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.right));
+        } else {
+          this.aimDirection = DIRECTIONS.left;
+          bullets.push(new Bullet(this.x + offset, this.y + this.model.height / 2 - 5, DIRECTIONS.left));
+        }
+      }
+    }
+
+    this.shooting.curTimer--;
+
+    if(!aimPressed)
       this.aimDirection = DIRECTIONS.none;
 
       this.moving = keyPressed;
