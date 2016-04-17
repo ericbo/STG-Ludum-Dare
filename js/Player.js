@@ -4,14 +4,14 @@ function Player () {
   this.prevX = 0;
   this.prevY = 0;
   this.speed = 6;
-  this.isjumping = false;
+  this.jumpPressed = false;
   this.isOnGround = false;
   this.curVel = 0;
   this.maxVel = 10;
   this.velIncrement = 0.5;
   this.jumpVel = 10;
   this.platformID = null;
-  this.sprite;
+  this.sprite = undefined;
   this.image = "img/HeroFull.png";
   this.start = new Date().getTime(); //Used for animations
   this.direction = true; //True - right, false - left
@@ -20,6 +20,7 @@ function Player () {
   this.colLeft = false;
   this.colRight = false;
   this.colTop = false;
+  this.name = "Bert";
 
   this.shooting = {
     maxTimer: 10,
@@ -36,8 +37,14 @@ function Player () {
     isReady: true
   };
 
+  this.doubleJump = {
+    isReady: true
+  };
+
   this.model = {
-    width: 40,
+    dashWidth: 80,
+    defaultWidth: 40,
+    width: this.defaultWidth,
     height: 80,
     color: "#bd4d04"
   };
@@ -63,6 +70,7 @@ function Player () {
         this.x + this.model.width > platforms[platform].x - offset) {
           this.platformID = platform;
           this.isOnGround = true;
+          this.doubleJump.isReady = true;
           this.y = platforms[this.platformID].y - this.model.height;
           this.curVel = 0;
         }
@@ -84,7 +92,7 @@ function Player () {
          this.isOnGround = false;
     }
     // Move Right
-    if (KEYS.D in KeysDown)
+    if (KEYS.RIGHT in KeysDown && !this.dash.isDashing)
       if (this.x + this.model.width < canvasWidth)
       {
         this.x += this.speed;
@@ -93,7 +101,7 @@ function Player () {
       }
 
     //Move Left
-    if (KEYS.A in KeysDown){
+    if (KEYS.LEFT in KeysDown && !this.dash.isDashing)
       if (this.x > 0)
       {
         this.x -= this.speed;
@@ -105,15 +113,12 @@ function Player () {
         else
           keyPressed = true;
       }
-      else{
-        this.x = 1
-      }
-    }
 
     // Dashing
-    if (KEYS.SPACE in KeysDown && this.dash.isReady)
+    if (KEYS.X in KeysDown && this.dash.isReady)
       if (!dashPressed) {
         dashPressed = true;
+        this.model.width = this.model.dashWidth;
         this.dash.isReady = false;
         this.dash.isDashing = true;
         this.dash.curCooldown = this.dash.maxCooldown;
@@ -123,16 +128,14 @@ function Player () {
       dashPressed = false;
 
     if (this.dash.isDashing) {
-      if (this.direction) {
-        this.prevX = this.x;
-        this.x += this.speed * 3;
-      } else if (this. x > 0){
-        this.prevX = this.x;
-        this.x -= this.speed * 3;
-      }
-      else{
-        this.x = 1;
-      }
+      var dashSpeed = this.dash.curDash < 10 ?  (this.speed * 2) / (10 - this.dash.curDash) : this.speed * 2;
+      keyPressed = true;
+      this.prevX = this.x;
+
+      if (this.direction)
+        this.x += dashSpeed;
+      else
+        this.x -= dashSpeed;
     }
 
     // Check if the player is colliding with solid platforms
@@ -174,15 +177,35 @@ function Player () {
     }
 
     //Move Up
-    if (KEYS.W in KeysDown)
-      if (this.isOnGround) {
-        this.curVel = this.jumpVel;
-        this.y -= 1;
+    if (KEYS.UP in KeysDown) {
+      if (!this.jumpPressed) {
+        if (this.isOnGround) {
+          this.jumpPressed = true;
+          this.curVel = this.jumpVel;
+          this.y -= 1;
+          this.prevY = this.y;
+          this.isOnGround = false;
+          this.doubleJump.curFirst = this.doubleJump.maxFirst;
+        } else if (this.doubleJump.isReady) {
+          this.jumpPressed = true;
+          this.curVel = this.jumpVel;
+          this.prevY = this.y;
+          this.doubleJump.isReady = false;
+          this.doubleJump.curFirst = this.doubleJump.maxFirst;
+        }
+      }
+    } else
+      this.jumpPressed = false;
+
+    // Move down from platforms
+    if (KEYS.DOWN in KeysDown)
+      if (this.isOnGround && platforms[this.platformID].type == 1) {
+        this.y += 1;
         this.prevY = this.y;
         this.isOnGround = false;
       }
     // Shoot things
-    if (KEYS.J in KeysDown) {
+    if (KEYS.C in KeysDown) {
       this.shooting.isShooting = true;
       aimPressed = true;
     } else
@@ -213,13 +236,20 @@ function Player () {
     if (this.dash.curCooldown === 0)
       this.dash.isReady = true;
 
-    if (this.dash.curDash === 0)
+
+    if (this.dash.curDash === 0) {
       this.dash.isDashing = false;
+      this.model.width = this.model.defaultWidth;
+    }
 
     if(!aimPressed)
       this.aimDirection = DIRECTIONS.none;
 
-      this.moving = keyPressed;
+    this.moving = keyPressed;
+
+    // Round position
+    this.x = Math.round(this.x);
+    this.prevX = Math.round(this.prevX);
   };
 
   this.Render = function () {
@@ -229,8 +259,10 @@ function Player () {
     //ctx.fillRect(this.x, this.y, this.model.width, this.model.height);
 
     //Display correct animiation sprite based on the heros position.
-    if(this.direction)
-      if(this.moving)
+    if(this.direction)    // Right
+      if (this.dash.isDashing)
+        this.DrawSprite(this.spriteState.dashingRight);
+      else if(this.moving)
         if(this.isOnGround)
           if(this.aimDirection == DIRECTIONS.right)
             this.DrawSprite(this.spriteState.aimWalkingRight);
@@ -246,14 +278,24 @@ function Player () {
           else
             this.DrawSprite(this.spriteState.jumpRight);
       else
-        if(this.aimDirection == DIRECTIONS.right)
-          this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == DIRECTIONS.left)
-          this.DrawSprite(this.spriteState.aimGroundLeft);
+        if(!this.isOnGround)
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpRight);
         else
-          this.DrawSprite(this.spriteState.idleRight);
-    else {
-      if(this.moving)
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimGroundRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimGroundLeft);
+          else
+            this.DrawSprite(this.spriteState.idleRight);
+    else {            // Left
+      if (this.dash.isDashing)
+        this.DrawSprite(this.spriteState.dashingLeft);
+      else if(this.moving)
         //If on ground and moving
         if(this.isOnGround)
           if(this.aimDirection == DIRECTIONS.right)
@@ -271,30 +313,41 @@ function Player () {
           else
             this.DrawSprite(this.spriteState.jumpLeft);
       else
-        if(this.aimDirection == DIRECTIONS.right)
-          this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == DIRECTIONS.left)
-          this.DrawSprite(this.spriteState.aimGroundLeft);
+        if (!this.isOnGround)
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpLeft);
         else
-          this.DrawSprite(this.spriteState.idleLeft);
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimGroundRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimGroundLeft);
+          else
+            this.DrawSprite(this.spriteState.idleLeft);
     }
 
     //Draw debug window
     ctx.fillStyle = "#48ff00";
-    ctx.fillText("Current pos  (" + this.x + ", " + this.y + ")", 10, 10);
-    ctx.fillText("Previous pos (" + this.prevX + ", " + this.prevY + ")", 10, 20);
+    ctx.fillText("Current pos  (" + (this.x + offset) + ", " + this.y + ")", 10, 10);
+    ctx.fillText("Model Size (" + this.model.width + ", " + this.model.height + ")", 10, 20);
     ctx.fillText("isOnGround - " + this.isOnGround, 10, 30);
     ctx.fillText("curVel - " + this.curVel, 10, 40);
     ctx.fillText("isDashing - " + this.dash.isDashing, 10, 50);
     ctx.fillText("Dash Cooldown - " + this.dash.curCooldown, 10, 60);
     ctx.fillText("Dash Timer - " + this.dash.curDash, 10, 70);
+    ctx.fillText("Jump Timer - " + this.doubleJump.curFirst, 10, 80);
 
-    if (KEYS.S in KeysDown)
-      if (this.isOnGround && platforms[this.platformID].type == 1) {
-        this.y += 1;
-        this.prevY = this.y;
-        this.isOnGround = false;
-      }
+    // Debuging double jump
+    ctx.fillText("Jump Key - " + this.jumpPressed, 300, 10);
+    ctx.fillText("Double Jump Ready - " + this.doubleJump.isReady, 300, 20);
+
+    // Draw keys
+    ctx.fillText("Arrow keys - move", 500, 10);
+    ctx.fillText("C - Shoot", 500, 20);
+    ctx.fillText("X - Dash", 500, 30);
 
   };
 
@@ -342,7 +395,7 @@ function Player () {
       frames = this.spriteCords.idle.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.idle[currentFrame][0], this.spriteCords.idle[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -364,7 +417,7 @@ function Player () {
       frames = this.spriteCords.walking.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.walking[currentFrame][0], this.spriteCords.walking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -386,7 +439,7 @@ function Player () {
       frames = this.spriteCords.jumping.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.jumping[currentFrame][0], this.spriteCords.jumping[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -408,7 +461,7 @@ function Player () {
       frames = this.spriteCords.aimGround.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimGround[currentFrame][0], this.spriteCords.aimGround[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -431,7 +484,7 @@ function Player () {
       frames = this.spriteCords.aimFalling.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimFalling[currentFrame][0], this.spriteCords.aimFalling[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
@@ -453,10 +506,32 @@ function Player () {
       frames = this.spriteCords.aimWalking.length;
       currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
 
-      ctx.save()
+      ctx.save();
       ctx.translate(canvasWidth, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(this.sprite, this.spriteCords.aimWalking[currentFrame][0], this.spriteCords.aimWalking[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
+      ctx.restore();
+      return;
+    }
+
+    // Dashing right
+    if(state == this.spriteState.dashingRight) {
+      frames = this.spriteCords.dashing.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.drawImage(this.sprite, this.spriteCords.dashing[currentFrame][0], this.spriteCords.dashing[currentFrame][1], this.model.width, this.model.height, this.x, this.y, this.model.width, this.model.height);
+      return;
+    }
+
+    // Dashing left
+    if(state == this.spriteState.dashingLeft) {
+      frames = this.spriteCords.dashing.length;
+      currentFrame = Math.floor((elapsedTime / 40) / frames) % frames;
+
+      ctx.save();
+      ctx.translate(canvasWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(this.sprite, this.spriteCords.dashing[currentFrame][0], this.spriteCords.dashing[currentFrame][1], this.model.width, this.model.height, this.x - this.model.width + flipOffset, this.y, this.model.width, this.model.height);
       ctx.restore();
       return;
     }
@@ -474,7 +549,9 @@ function Player () {
     aimFallingRight : 8,
     aimFallingeft : 9,
     aimWalkingRight : 10,
-    aimWalkingLeft : 11
+    aimWalkingLeft : 11,
+    dashingLeft : 12,
+    dashingRight : 13
   };
 
   this.spriteCords = {
@@ -483,6 +560,7 @@ function Player () {
     jumping: [[228, 88]],
     aimGround : [[228,172]],
     aimFalling : [[276,88]],
-    aimWalking : [[6,172], [62,172], [116,172], [172,172]]
+    aimWalking : [[6,172], [62,172], [116,172], [172,172]],
+    dashing : [[222, 2], [308, 2]]
   };
 }
