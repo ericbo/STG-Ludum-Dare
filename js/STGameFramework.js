@@ -28,7 +28,7 @@ RequestAnimationFrame = window.requestAnimationFrame ||
     window.msRequestAnimationFrame;
 
 //Global images
-IMAGES = ['img/Tile_Red.png', 'img/Tile_Fallthrough.png'];
+IMAGES = ['img/Tile_Red.png', 'img/Tile_Fallthrough.png', 'img/Billy.png'];
 LOADED_IMAGES = [];
 
 function loadImages() {
@@ -72,6 +72,8 @@ platforms.push(new Platform(600,235,200));
 platforms.push(new Platform(400,300,200));
 platforms.push(new Platform(0,350,mapWidth,20,0));
 
+var enemies = [];
+enemies.push(new Billy(200, 298));
 
 /*
 * This function initializes the game engine and the canvas.
@@ -136,6 +138,10 @@ function Update () {
       }
     }
 
+    // Update all enemies
+    for (var enemie in enemies)
+      enemies[enemie].Update();
+
     // Update bullets
     for (i in bullets) {
       bullets[i].Update();
@@ -160,6 +166,10 @@ function Render () {
 
     for (var platform in platforms) {
       platforms[platform].Render();
+    }
+
+    for (var enemie in enemies) {
+      enemies[enemie].Render();
     }
 
     // Render bullets
