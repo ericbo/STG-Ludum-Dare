@@ -15,8 +15,8 @@ function Platform(x,y,width,height,type = 0) {
 
   this.Render = function () {
     if(this.type == 1)
-      ctx.drawImage(this.LOADED_IMAGES[1], this.x, this.y, this.model.width, this.model.height);
+      ctx.drawImage(LOADED_IMAGES[1], this.x - offset, this.y, this.model.width, this.model.height);
     else
-      ctx.drawImage(this.LOADED_IMAGES[0], this.x, this.y, this.model.width, this.model.height);
+      ctx.drawImage(LOADED_IMAGES[0], this.x - offset, this.y, this.model.width, this.model.height);
   };
 }

@@ -28,7 +28,7 @@ RequestAnimationFrame = window.requestAnimationFrame ||
     window.msRequestAnimationFrame;
 
 //Global images
-IMAGES = ['img/Tile_Red.png', 'img/Fallthrough.png'];
+IMAGES = ['img/Tile_Red.png', 'img/Tile_Fallthrough.png'];
 LOADED_IMAGES = [];
 
 function loadImages() {
@@ -66,13 +66,13 @@ addEventListener("keyup", function (e) {
 var player = new Player();
 player.loadImages();
 var platforms = [];
-platforms.push(new Platform(100,50,128,8));
-platforms.push(new Platform(200,100,128,8));
-platforms.push(new Platform(300,150,128,8,0));
-platforms.push(new Platform(400,200,128,8));
-platforms.push(new Platform(500,250,128,8,0));
-platforms.push(new Platform(400,300,128,8));
-platforms.push(new Platform(0,350,640,10,0));
+platforms.push(new Platform(100,50,100,8));
+platforms.push(new Platform(200,100,100,8));
+platforms.push(new Platform(300,150,100,8,0));
+platforms.push(new Platform(400,200,100,8));
+platforms.push(new Platform(500,250,100,8,0));
+platforms.push(new Platform(400,300,200,8,1));
+platforms.push(new Platform(0,350,mapWidth,100,0));
 
 /*
 * This function initializes the game engine and the canvas.
