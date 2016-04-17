@@ -4,14 +4,14 @@ function Player () {
   this.prevX = 0;
   this.prevY = 0;
   this.speed = 6;
-  this.isjumping = false;
+  this.jumpPressed = false;
   this.isOnGround = false;
   this.curVel = 0;
   this.maxVel = 10;
   this.velIncrement = 0.5;
   this.jumpVel = 10;
   this.platformID = null;
-  this.sprite;
+  this.sprite = undefined;
   this.image = "img/HeroFull.png";
   this.start = new Date().getTime(); //Used for animations
   this.direction = true; //True - right, false - left
@@ -33,6 +33,10 @@ function Player () {
     maxDash: 20,
     curDash: 0,
     isDashing: false,
+    isReady: true
+  };
+  
+  this.doubleJump = {
     isReady: true
   };
 
@@ -63,6 +67,7 @@ function Player () {
         this.x + this.model.width > platforms[platform].x - offset) {
           this.platformID = platform;
           this.isOnGround = true;
+          this.doubleJump.isReady = true;
           this.y = platforms[this.platformID].y - this.model.height;
           this.curVel = 0;
         }
@@ -168,13 +173,25 @@ function Player () {
     }
 
     //Move Up
-    if (KEYS.UP in KeysDown)
-      if (this.isOnGround) {
-        this.curVel = this.jumpVel;
-        this.y -= 1;
-        this.prevY = this.y;
-        this.isOnGround = false;
+    if (KEYS.UP in KeysDown) {
+      if (!this.jumpPressed) {
+        if (this.isOnGround) {
+          this.jumpPressed = true;
+          this.curVel = this.jumpVel;
+          this.y -= 1;
+          this.prevY = this.y;
+          this.isOnGround = false;
+          this.doubleJump.curFirst = this.doubleJump.maxFirst;
+        } else if (this.doubleJump.isReady) {
+          this.jumpPressed = true;
+          this.curVel = this.jumpVel;
+          this.prevY = this.y;
+          this.doubleJump.isReady = false;
+          this.doubleJump.curFirst = this.doubleJump.maxFirst;
+        }
       }
+    } else
+      this.jumpPressed = false;
     
     // Move down from platforms
     if (KEYS.DOWN in KeysDown)
@@ -295,6 +312,11 @@ function Player () {
     ctx.fillText("isDashing - " + this.dash.isDashing, 10, 50);
     ctx.fillText("Dash Cooldown - " + this.dash.curCooldown, 10, 60);
     ctx.fillText("Dash Timer - " + this.dash.curDash, 10, 70);
+    ctx.fillText("Jump Timer - " + this.doubleJump.curFirst, 10, 80);
+    
+    // Debuging double jump
+    ctx.fillText("Jump Key - " + this.jumpPressed, 300, 10);
+    ctx.fillText("Double Jump Ready - " + this.doubleJump.isReady, 300, 20);
     
     // Draw keys
     ctx.fillText("Arrow keys - move", 500, 10);
