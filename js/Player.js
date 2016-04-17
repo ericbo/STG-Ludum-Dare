@@ -270,12 +270,20 @@ function Player () {
           else
             this.DrawSprite(this.spriteState.jumpRight);
       else
-        if(this.aimDirection == DIRECTIONS.right)
-          this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == DIRECTIONS.left)
-          this.DrawSprite(this.spriteState.aimGroundLeft);
+        if(!this.isOnGround)
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpRight);
         else
-          this.DrawSprite(this.spriteState.idleRight);
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimGroundRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimGroundLeft);
+          else
+            this.DrawSprite(this.spriteState.idleRight);
     else {
       if(this.moving)
         //If on ground and moving
@@ -295,12 +303,20 @@ function Player () {
           else
             this.DrawSprite(this.spriteState.jumpLeft);
       else
-        if(this.aimDirection == DIRECTIONS.right)
-          this.DrawSprite(this.spriteState.aimGroundRight);
-        else if(this.aimDirection == DIRECTIONS.left)
-          this.DrawSprite(this.spriteState.aimGroundLeft);
+        if (!this.isOnGround)
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimFallingRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimFallingLeft);
+          else
+            this.DrawSprite(this.spriteState.jumpLeft);
         else
-          this.DrawSprite(this.spriteState.idleLeft);
+          if(this.aimDirection == DIRECTIONS.right)
+            this.DrawSprite(this.spriteState.aimGroundRight);
+          else if(this.aimDirection == DIRECTIONS.left)
+            this.DrawSprite(this.spriteState.aimGroundLeft);
+          else
+            this.DrawSprite(this.spriteState.idleLeft);
     }
 
     //Draw debug window
